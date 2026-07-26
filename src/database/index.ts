@@ -3,17 +3,15 @@ import { drizzle } from "drizzle-orm/sqlite-proxy";
 
 import * as schema from "./schema";
 
-const sqlite = new sqlite3.Database(
-  "./src/database/toolverse.db"
-);
+const sqlite = new sqlite3.Database("./src/database/toolverse.db");
 
 export const db = drizzle(
   async (sql, params, method) => {
     const rows = await new Promise<any[]>((resolve, reject) => {
       if (method === "all") {
-        sqlite.all(sql, params, (error, rows) => {
+        sqlite.all(sql, params, (error, result) => {
           if (error) reject(error);
-          else resolve(rows ?? []);
+          else resolve(result ?? []);
         });
       } else {
         sqlite.run(sql, params, function (error) {
@@ -23,7 +21,7 @@ export const db = drizzle(
       }
     });
 
-    return rows;
+    return { rows };
   },
   { schema }
 );

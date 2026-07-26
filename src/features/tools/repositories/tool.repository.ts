@@ -1,3 +1,5 @@
+import { eq } from "drizzle-orm";
+
 import { db } from "@/database";
 import { tools } from "@/database/schema";
 
@@ -7,7 +9,7 @@ export class ToolRepository {
   }
 
   async findBySlug(slug: string) {
-    return db.select().from(tools).where((table, { eq }) => eq(table.slug, slug));
+    return db.select().from(tools).where(eq(tools.slug, slug));
   }
 }
 
