@@ -1,15 +1,30 @@
-import { eq } from "drizzle-orm";
+import { sqliteAdapter } from "@/database/adapters/sqlite.adapter";
 
-import { db } from "@/database";
-import { tools } from "@/database/schema";
+export interface ToolRecord {
+  id: string;
+  category_id: string;
+  slug: string;
+  name: string;
+  description: string | null;
+  version: string;
+  route: string;
+  is_active: number;
+  created_at: string;
+  updated_at: string;
+}
 
 export class ToolRepository {
   async findAll() {
-    return db.select().from(tools);
+    return sqliteAdapter.all<ToolRecord>(
+      "SELECT * FROM tools ORDER BY name ASC"
+    );
   }
 
   async findBySlug(slug: string) {
-    return db.select().from(tools).where(eq(tools.slug, slug));
+    return sqliteAdapter.get<ToolRecord>(
+      "SELECT * FROM tools WHERE slug = ?",
+      [slug]
+    );
   }
 }
 
