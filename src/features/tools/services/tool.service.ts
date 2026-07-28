@@ -1,12 +1,27 @@
 import { toolRepository } from "../repositories/tool.repository";
+import {
+  getTool as getRegisteredTool,
+  getTools as getRegisteredTools,
+} from "@/tools/shared/tool.registry";
 
 export class ToolService {
   async getAllTools() {
-    return toolRepository.findAll();
+    const databaseTools = await toolRepository.findAll();
+
+    return {
+      database: databaseTools,
+      registered: getRegisteredTools(),
+    };
   }
 
   async getTool(slug: string) {
-    return toolRepository.findBySlug(slug);
+    const databaseTool = await toolRepository.findBySlug(slug);
+    const registeredTool = getRegisteredTool(slug);
+
+    return {
+      database: databaseTool,
+      registered: registeredTool,
+    };
   }
 }
 
